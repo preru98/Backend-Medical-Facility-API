@@ -127,3 +127,28 @@ def doctor_login(request):
                 'Authentication':False,
             }
         return JsonResponse(responseDict,status=200)
+	
+
+
+#Create Branch
+@csrf_exempt
+def create_branch(request):
+    if request.method =='POST':
+        data=JSONParser().parse(request)
+        login_username=data['username']
+        login_password=data['password']
+        try:
+            current_admin=Admin.objects.get(username=login_username)
+
+        except Admin.DoesNotExist:
+            print("Admin does not exist")
+            return HttpResponse(status=404)
+        
+        if(current_admin.password==login_password):
+            
+
+        else:
+            responseDict={
+                'Successful':False,
+            }
+        return JsonResponse(responseDict,status=200)
