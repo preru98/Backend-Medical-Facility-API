@@ -2,8 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from management_api.models import Admin, Branch, Staff, Doctor, Patient
-from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer
-# , DoctorSerializer, PatientSerializer
+from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer, DoctorSerializer, PatientSerializer
 
 # Create your views here.
 
@@ -25,10 +24,25 @@ def staff_list(request):
         
 
 
-
 #List of Registered Branch
 def branch_list(request):
     if request.method == 'GET':
         allBranches = Branch.objects.all()
         serializer = BranchSerializer(allBranches, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+#List of Registered Patients
+def patient_list(request):
+    if request.method == 'GET':
+        allPatients = Patient.objects.all()
+        serializer = PatientSerializer(allPatients, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+
+#List of Registered Doctors
+def doctor_list(request):
+    if request.method == 'GET':
+        allDoctors = Doctor.objects.all()
+        serializer = DoctorSerializer(allDoctors, many=True)
         return JsonResponse(serializer.data, safe=False)

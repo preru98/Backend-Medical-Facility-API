@@ -40,7 +40,7 @@ class Patient(models.Model):
     username = models.CharField(max_length=200)
     email = models.EmailField()
     phone_number = models.CharField(max_length=30)
-    branch = models.ForeignKey(Branch, to_field='id', on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch, to_field='name', on_delete=models.CASCADE)
     age = models.PositiveIntegerField()
 
     def __str__(self):
