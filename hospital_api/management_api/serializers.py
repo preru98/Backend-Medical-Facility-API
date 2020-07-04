@@ -15,12 +15,15 @@ class BranchSerializer(serializers.ModelSerializer):
 
 
 
-# class StaffSerializer(serializers.Serializer):
-#     username = serializers.CharField(max_length=200)
-#     email = serializers.EmailField()
-#     phone_number = serializers.CharField(max_length=30)
-#     password = serializers.CharField(max_length=15)
-#     branch = serializers.CharField()
+class StaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Staff
+        fields = ['id', 'username', 'email', 'phone_number', 'password', 'branch']
+    # username = serializers.CharField(max_length=200)
+    # email = serializers.EmailField()
+    # phone_number = serializers.CharField(max_length=30)
+    # password = serializers.CharField(max_length=15)
+    # branch = serializers.CharField()
 
 #     def create(self, validated_data):
 #         branch_id=validated_data['branch']

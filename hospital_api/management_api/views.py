@@ -2,8 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from management_api.models import Admin, Branch, Staff, Doctor, Patient
-from management_api.serializers import AdminSerializer, BranchSerializer
-# , StaffSerializer, DoctorSerializer, PatientSerializer
+from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer
+# , DoctorSerializer, PatientSerializer
 
 # Create your views here.
 
