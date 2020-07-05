@@ -35,3 +35,24 @@ class DoctorSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'password']
 
     
+
+class AuthenticateAdminSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(label='ID', read_only=True, required=False)
+    username = serializers.CharField(max_length=200, required=False)
+
+    def authenticate_admin_function(self):
+        try:
+            current_admin=Admin.objects.get(email=self.validated_data['email'])
+        except Admin.DoesNotExist:
+            print("Caught")
+            return False
+
+        if(current_admin.password==self.validated_data['password']):
+            return True
+        return False
+
+    class Meta:
+        model = Admin
+        fields = ['id', 'username', 'email', 'password']
+    
+

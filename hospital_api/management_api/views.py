@@ -1,8 +1,10 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from management_api.models import Admin, Branch, Staff, Doctor, Patient
-from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer, DoctorSerializer, PatientSerializer
+from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer, DoctorSerializer, PatientSerializer, AuthenticateAdminSerializer
 
 # Create your views here.
 
@@ -130,25 +132,19 @@ def doctor_login(request):
 	
 
 
-#Create Branch
+# Create Branch
+@api_view(['POST'])
 @csrf_exempt
-def create_branch(request):
+def create_branch(request):                      #request.data is a dictionary
     if request.method =='POST':
-        data=JSONParser().parse(request)
-        login_username=data['username']
-        login_password=data['password']
-        try:
-            current_admin=Admin.objects.get(username=login_username)
-
-        except Admin.DoesNotExist:
-            print("Admin does not exist")
-            return HttpResponse(status=404)
-        
-        if(current_admin.password==login_password):
-            
-
+        admin_authenticate_serializer=AuthenticateAdminSerializer(data=request.data['admin'])
+        admin_authenticate_serializer.is_valid(raise_exception=True)
+        if(admin_authenticate_serializer.authenticate_admin_function()):
+            responseDict={
+                'Successful':True,
+            }
         else:
             responseDict={
                 'Successful':False,
             }
-        return JsonResponse(responseDict,status=200)
+        return Response(responseDict,status=200)
