@@ -135,16 +135,24 @@ def doctor_login(request):
 # Create Branch
 @api_view(['POST'])
 @csrf_exempt
-def create_branch(request):                      #request.data is a dictionary
+def create_branch(request):          #request.data is a dictionary
     if request.method =='POST':
         admin_authenticate_serializer=AuthenticateAdminSerializer(data=request.data['admin'])
-        admin_authenticate_serializer.is_valid(raise_exception=True)
+        
+        admin_authenticate_serializer.is_valid(raise_exception=True)          #Bad Request, 400 returned
+
         if(admin_authenticate_serializer.authenticate_admin_function()):
-            responseDict={
-                'Successful':True,
-            }
+            
+            branch_serializer=BranchSerializer(data=request.data['branch'])
+            if(branch_serializer.is_valid(raise_exception=True)):             #Bad Request, 400 returned
+                branch_serializer.save()
+                print("Right Branch Information")
+            else:
+                print("Wrong Branch Information")                             #Bad Request (Handled above)
+
         else:
-            responseDict={
-                'Successful':False,
-            }
-        return Response(responseDict,status=200)
+            return Response(admin_authenticate_serializer.errors,status=401)  #Unauthorized, 401 returned
+
+        return Response(branch_serializer.validated_data,status=200)
+
+

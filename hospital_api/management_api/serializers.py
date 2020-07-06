@@ -44,7 +44,6 @@ class AuthenticateAdminSerializer(serializers.ModelSerializer):
         try:
             current_admin=Admin.objects.get(email=self.validated_data['email'])
         except Admin.DoesNotExist:
-            print("Caught")
             return False
 
         if(current_admin.password==self.validated_data['password']):
