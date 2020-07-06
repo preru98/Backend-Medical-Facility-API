@@ -213,4 +213,26 @@ def create_patient(request):
             return Response(staff_authenticate_serializer.errors,status=401)  #Unauthenticated, 401 returned
 
         return Response(patient_serializer_for_branch.data,status=200)
-            
+
+
+
+# Patients List from Specific Branch
+@api_view(['GET'])
+def patient_list_specific_branch(request, branch_name):         
+    if request.method == 'GET':
+        all_patients_from_branch = Patient.objects.all().filter(branch=branch_name)
+        patients_serializers = PatientSerializer(all_patients_from_branch, many=True) 
+        return Response(patients_serializers.data, status=200)
+
+
+
+# Patients Info
+@api_view(['GET'])
+def patient_info(request, patient_id):         
+    if request.method == 'GET':
+        try:
+            patient = Patient.objects.get(id=patient_id)
+        except Patient.DoesNotExist :
+            return Response(status=404)
+        patient_serializer = PatientSerializer(patient) 
+        return Response(patient_serializer.data, status=200)
