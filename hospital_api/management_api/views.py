@@ -4,7 +4,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from management_api.models import Admin, Branch, Staff, Doctor, Patient
-from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer, DoctorSerializer, PatientSerializer, AuthenticateAdminSerializer, AuthenticateStaffSerializer
+from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer, DoctorSerializer, PatientSerializer, AuthenticateAdminSerializer, AuthenticateStaffSerializer, AuthenticateDoctorSerializer
 
 # Create your views here.
 
@@ -64,81 +64,44 @@ def doctor_list(request):
 
 
 #Staff Login
+@api_view(['POST'])
 @csrf_exempt
 def staff_login(request):
     if request.method =='POST':
-        data=JSONParser().parse(request)
-        login_username=data['username']
-        login_password=data['password']
-        try:
-            staff_member=Staff.objects.get(username=login_username)
-            print(staff_member.id)
-
-        except Staff.DoesNotExist:
-            print("Caught")
-            return HttpResponse(status=404)
-        
-        if(staff_member.password==login_password):
-            responseDict={
-                'Authentication':True,
-            }
-        else:
-            responseDict={
-                'Authentication':False,
-            }
-        return JsonResponse(responseDict,status=200)
-
+        staff_authenticate_serializer=AuthenticateStaffSerializer(data=request.data)
+        staff_authenticate_serializer.is_valid(raise_exception=True)          #Bad Request, 400 returned
+    if(staff_authenticate_serializer.authenticate_staff_function()):
+        return Response({'Authentication':True}, status=200)
+    else:
+        return Response({'Authentication':False}, status=401)
+   
 
 
 #Admin Login
+@api_view(['POST'])
 @csrf_exempt
 def admin_login(request):
     if request.method =='POST':
-        data=JSONParser().parse(request)
-        login_username=data['username']
-        login_password=data['password']
-        try:
-            current_admin=Admin.objects.get(username=login_username)
-
-        except Admin.DoesNotExist:
-            print("Caught")
-            return HttpResponse(status=404)
-        
-        if(current_admin.password==login_password):
-            responseDict={
-                'Authentication':True,
-            }
-        else:
-            responseDict={
-                'Authentication':False,
-            }
-        return JsonResponse(responseDict,status=200)
+        admin_authenticate_serializer=AuthenticateAdminSerializer(data=request.data)
+        admin_authenticate_serializer.is_valid(raise_exception=True)          #Bad Request, 400 returned
+    if(admin_authenticate_serializer.authenticate_admin_function()):
+        return Response({'Authentication':True}, status=200)
+    else:
+        return Response({'Authentication':False}, status=401)
 
 
 
 #Doctor Login
+@api_view(['POST'])
 @csrf_exempt
 def doctor_login(request):
     if request.method =='POST':
-        data=JSONParser().parse(request)
-        login_username=data['username']
-        login_password=data['password']
-        try:
-            current_doctor=Doctor.objects.get(username=login_username)
-
-        except Doctor.DoesNotExist:
-            print("Caught")
-            return HttpResponse(status=404)
-        
-        if(current_doctor.password==login_password):
-            responseDict={
-                'Authentication':True,
-            }
-        else:
-            responseDict={
-                'Authentication':False,
-            }
-        return JsonResponse(responseDict,status=200)
+        doctor_authenticate_serializer=AuthenticateDoctorSerializer(data=request.data)
+        doctor_authenticate_serializer.is_valid(raise_exception=True)          #Bad Request, 400 returned
+    if(doctor_authenticate_serializer.authenticate_doctor_function()):
+        return Response({'Authentication':True}, status=200)
+    else:
+        return Response({'Authentication':False}, status=401)
 	
 
 

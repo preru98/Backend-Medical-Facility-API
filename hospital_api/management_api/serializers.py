@@ -31,7 +31,6 @@ class PatientSerializer(serializers.ModelSerializer):
 
 
 
-
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
@@ -42,6 +41,8 @@ class DoctorSerializer(serializers.ModelSerializer):
 class AuthenticateAdminSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(label='ID', read_only=True, required=False)
     username = serializers.CharField(max_length=200, required=False)
+    email = serializers.EmailField(max_length=254)
+
 
     def authenticate_admin_function(self):
         try:
@@ -69,7 +70,8 @@ class AuthenticateStaffSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=200, required=False)
     phone_number = serializers.CharField(max_length=30, required=False)
     branch = serializers.SlugRelatedField(queryset=Branch.objects.all(), slug_field='name', required=False)
-    
+    email = serializers.EmailField(max_length=254)
+
     def authenticate_staff_function(self):
         try:
             current_staff=Staff.objects.get(email=self.validated_data['email'])
@@ -77,5 +79,28 @@ class AuthenticateStaffSerializer(serializers.ModelSerializer):
             return False
 
         if(current_staff.password==self.validated_data['password']):
+            return True
+        return False
+
+
+
+class AuthenticateDoctorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Staff
+        fields = ['id', 'username', 'email','password']
+    
+    id = serializers.IntegerField(label='ID', read_only=True, required=False)
+    username = serializers.CharField(max_length=200, required=False)
+    email = serializers.EmailField(max_length=254)
+
+    
+    def authenticate_doctor_function(self):
+        try:
+            current_doctor=Doctor.objects.get(email=self.validated_data['email'])
+        except Doctor.DoesNotExist:
+            return False
+
+        if(current_doctor.password==self.validated_data['password']):
             return True
         return False
