@@ -4,7 +4,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from management_api.models import Admin, Branch, Staff, Doctor, Patient
-from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer, DoctorSerializer, PatientSerializer, AuthenticateAdminSerializer
+from management_api.serializers import AdminSerializer, BranchSerializer, StaffSerializer, DoctorSerializer, PatientSerializer, AuthenticateAdminSerializer, AuthenticateStaffSerializer
 
 # Create your views here.
 
@@ -183,3 +183,34 @@ def create_staff(request):          #request.data is a dictionary
         return Response(staff_serializer_for_branch.data,status=200)
 
 
+# Create Patient
+@api_view(['POST'])
+@csrf_exempt
+def create_patient(request):         
+    if request.method =='POST':
+
+        staff_authenticate_serializer=AuthenticateStaffSerializer(data=request.data['staff'])
+        # print(request.data)
+        staff_authenticate_serializer.is_valid(raise_exception=True)          #Bad Request, 400 returned
+        
+        patient_serializer_for_branch=None
+
+        if(staff_authenticate_serializer.authenticate_staff_function()):
+            patient_serializer=PatientSerializer(data=request.data['patient'])
+            if(patient_serializer.is_valid(raise_exception=True)):             #Bad Request, 400 returned
+                # print(patient_serializer.save())
+                
+                if(request.data['staff']['branch']==request.data['patient']['branch']):
+                    print("Right Patient Information")
+                    patient_serializer_for_branch=PatientSerializer(patient_serializer.save()) #Serializing the object
+                else:
+                    return Response(staff_authenticate_serializer.errors,status=403)  #Unauthorized, 403 returned
+
+            else:
+                print("Wrong Patient Information")                             #Bad Request (Handled above)
+
+        else:
+            return Response(staff_authenticate_serializer.errors,status=401)  #Unauthenticated, 401 returned
+
+        return Response(patient_serializer_for_branch.data,status=200)
+            
