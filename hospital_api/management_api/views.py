@@ -172,7 +172,7 @@ def create_staff(request):          #request.data is a dictionary
             if(staff_serializer.is_valid(raise_exception=True)):             #Bad Request, 400 returned
                 # print(staff_serializer.save())
                 print("Right Staff Information")
-                staff_serializer_for_branch=StaffSerializer(staff_serializer.save())
+                staff_serializer_for_branch=StaffSerializer(staff_serializer.save()) #Serializing the object
 
             else:
                 print("Wrong Staff Information")                             #Bad Request (Handled above)
