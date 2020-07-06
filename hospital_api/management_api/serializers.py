@@ -25,7 +25,10 @@ class StaffSerializer(serializers.ModelSerializer):
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'username', 'email', 'phone_number', 'age', 'branch']
+        fields = ['id', 'username', 'email', 'phone_number', 'age', 'branch', 'datetime_of_admission']
+
+    datetime_of_admission = serializers.DateTimeField(read_only=True, format=" %A, %d %B %Y at %H:%M:%S")
+
 
 
 
@@ -76,9 +79,3 @@ class AuthenticateStaffSerializer(serializers.ModelSerializer):
         if(current_staff.password==self.validated_data['password']):
             return True
         return False
-
-        
-
-
-    
-
