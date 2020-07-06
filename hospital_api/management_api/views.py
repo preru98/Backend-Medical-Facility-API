@@ -9,47 +9,57 @@ from management_api.serializers import AdminSerializer, BranchSerializer, StaffS
 # Create your views here.
 
 #List of Registered Admin
+@api_view(['GET'])
+@csrf_exempt
 def admin_list(request):
     if request.method == 'GET':
         allAdmins = Admin.objects.all()
         serializer = AdminSerializer(allAdmins, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
 
 
 #List of Registered Staff
+@api_view(['GET'])
+@csrf_exempt
 def staff_list(request):
     if request.method == 'GET':
         allStaff = Staff.objects.all()
         serializer = StaffSerializer(allStaff, many=True)
-        return JsonResponse(serializer.data, safe=False)    
+        return Response(serializer.data)    
 
 
 
 #List of Registered Branch
+@api_view(['GET'])
+@csrf_exempt
 def branch_list(request):
     if request.method == 'GET':
         allBranches = Branch.objects.all()
         serializer = BranchSerializer(allBranches, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
 
 
 #List of Registered Patients
+@api_view(['GET'])
+@csrf_exempt
 def patient_list(request):
     if request.method == 'GET':
         allPatients = Patient.objects.all()
         serializer = PatientSerializer(allPatients, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
 
 
 #List of Registered Doctors
+@api_view(['GET'])
+@csrf_exempt
 def doctor_list(request):
     if request.method == 'GET':
         allDoctors = Doctor.objects.all()
         serializer = DoctorSerializer(allDoctors, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
 
 
