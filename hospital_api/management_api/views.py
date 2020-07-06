@@ -156,3 +156,30 @@ def create_branch(request):          #request.data is a dictionary
         return Response(branch_serializer.validated_data,status=200)
 
 
+
+# Create Staff
+@api_view(['POST'])
+@csrf_exempt
+def create_staff(request):          #request.data is a dictionary
+    if request.method =='POST':
+        admin_authenticate_serializer=AuthenticateAdminSerializer(data=request.data['admin'])
+        
+        admin_authenticate_serializer.is_valid(raise_exception=True)          #Bad Request, 400 returned
+        staff_serializer_for_branch=None
+        if(admin_authenticate_serializer.authenticate_admin_function()):
+            
+            staff_serializer=StaffSerializer(data=request.data['staff'])
+            if(staff_serializer.is_valid(raise_exception=True)):             #Bad Request, 400 returned
+                # print(staff_serializer.save())
+                print("Right Staff Information")
+                staff_serializer_for_branch=StaffSerializer(staff_serializer.save())
+
+            else:
+                print("Wrong Staff Information")                             #Bad Request (Handled above)
+
+        else:
+            return Response(admin_authenticate_serializer.errors,status=401)  #Unauthorized, 401 returned
+
+        return Response(staff_serializer_for_branch.data,status=200)
+
+

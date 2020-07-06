@@ -53,5 +53,6 @@ class AuthenticateAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
         fields = ['id', 'username', 'email', 'password']
+
     
 
